@@ -10,6 +10,7 @@ BLACK = (0, 0, 0)
 FONT_SIZE = 36
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50
+
 class Button:
     def __init__(self, screen, text, position, font_size):
         self.screen = screen

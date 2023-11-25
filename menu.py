@@ -1,5 +1,6 @@
 import pygame
 import sys
+from button import Button
 
 pygame.init()
 
@@ -25,13 +26,30 @@ class Menu:
         for i, button in enumerate(self.buttons):
             button.draw(i == self.selected_button)
 
+    def update(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    menu.navigate(-1)
+                elif event.key == pygame.K_DOWN:
+                    menu.navigate(1)
+                elif event.key == pygame.K_RETURN:
+                    menu.select()
+                    
+        screen.fill(BLACK)
+        menu.draw()
+
     def select(self):
         # Handle the action for the currently selected button
         if self.selected_button == 0:
             print("Start Game")
+            pygame.display.set_caption("GAME")
             self.game_started = True
         elif self.selected_button == 1:
-            print("How to Play")
+            pygame.display.set_caption("INSTRUCTIONS")
+            print("Instructions")
             # Add your "How to Play" logic here
         elif self.selected_button == 2:
             pygame.quit()
