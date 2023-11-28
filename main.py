@@ -1,7 +1,7 @@
 import pygame
 import sys
-from button import Button
-from menu import Menu
+from menuItems import Menu
+from menuItems import Button
 
 # Initialize Pygame
 pygame.init()
@@ -11,14 +11,18 @@ WIDTH = 800
 HEIGHT = 600
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+ORANGE = (255, 155, 0)
 FONT_SIZE = 36
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50
-speed = 5
+speed = 1
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("MENU")
 
 class Char(pygame.sprite.Sprite):
     def __init__(self, x, y, radius, speed):
-        super().__init__()
+        pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
         pygame.draw.circle(self.image, (255, 0, 0), (radius, radius), radius)
         self.rect = self.image.get_rect(center=(x, y))
@@ -36,47 +40,107 @@ class Char(pygame.sprite.Sprite):
         if keys[pygame.K_DOWN]:
             self.rect.y += self.speed
 
+        if self.rect.left > screen.get_width():
+            self.rect.right = 0 # ... wrap it back on the screen.
+        elif self.rect.right < 0:
+            self.rect.left = screen.get_width()
+        elif self.rect.top > screen.get_height():
+            self.rect.bottom = 0 # ... wrap it back on the screen.
+        elif self.rect.bottom < 0:
+            self.rect.top = screen.get_height()
 
-def menu_loop(menu):
-    while not menu.game_started:
-        menu.update()
-        pygame.display.flip()
-
-
-# Main function
-def main():
-    # Display configuration
+def start_game():
+    print("Start Game")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("GAME")
+    screen.fill(WHITE)
 
-    buttons = [
-        Button(screen, "Start Game", (WIDTH // 2 - BUTTON_WIDTH // 2, HEIGHT // 2 - BUTTON_HEIGHT-30), FONT_SIZE),
-        Button(screen, "Instructions", (WIDTH // 2 - BUTTON_WIDTH // 2, HEIGHT // 2 - 15), FONT_SIZE),
-        Button(screen, "Quit", (WIDTH // 2 - BUTTON_WIDTH // 2, HEIGHT // 2 + BUTTON_HEIGHT), FONT_SIZE),
-    ]
-
-    # Create a menu instance
-    menu = Menu(screen, buttons, FONT_SIZE)
-
-    char = Char(WIDTH//2, HEIGHT//2, 20, speed)
-
+    char = Char(WIDTH//2, HEIGHT//2, 20, 1)
     all_sprites = pygame.sprite.Group(char)
 
     clock = pygame.time.Clock()
+    clock.tick(30)
+
     running = True
-
     while running:
-        clock.tick(30)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-    
+                sys.exit()
+                pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
 
         all_sprites.update()
         screen.fill(WHITE)
         all_sprites.draw(screen)
+        pygame.display.flip()
 
+def show_options():
+    print("Options")
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("GAME")
+   
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+
+        screen.fill(ORANGE)
+        pygame.display.flip()
+
+
+def exit_game():
+    print("Exit")
+    pygame.quit()
+    sys.exit()
+
+def saveScore():
+    inFile = open("log.txt", "r")
+    log = inFile.read()
+    print(log)
+    inFile.close()
+
+
+# Main function
+def main():
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("MENU")
+
+    button_start = Button("Start Game", 300, 200, 200, 50, start_game)
+    button_options = Button("Options", 300, 260, 200, 50, show_options)
+    button_exit = Button("Exit", 300, 320, 200, 50, exit_game)
+
+    buttons = [button_start, button_options, button_exit]
+
+    # Create a menu instance
+    menu = Menu(screen, buttons)
+    
+    clock = pygame.time.Clock()
+    clock.tick(30)
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    menu.navigate(-1)
+                if event.key == pygame.K_DOWN:
+                    menu.navigate(1)
+                if event.key == pygame.K_RETURN:
+                    menu.select()
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+        
+        screen.fill(BLACK)
+        menu.draw()
         pygame.display.flip()
 
     pygame.quit()
