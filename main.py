@@ -2,6 +2,7 @@ import pygame
 import sys
 from menuItems import Menu
 from menuItems import Button
+from enemy import Enemy
 
 # Initialize Pygame
 pygame.init()
@@ -12,6 +13,7 @@ HEIGHT = 600
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 ORANGE = (255, 155, 0)
+GREEN = (0,255,0)
 FONT_SIZE = 36
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50
@@ -41,25 +43,26 @@ class Char(pygame.sprite.Sprite):
             self.rect.y += self.speed
 
         if self.rect.left > screen.get_width():
-            self.rect.right = 0 # ... wrap it back on the screen.
+            self.rect.right = 0 #Wrap
         elif self.rect.right < 0:
             self.rect.left = screen.get_width()
         elif self.rect.top > screen.get_height():
-            self.rect.bottom = 0 # ... wrap it back on the screen.
+            self.rect.bottom = 0 #Wrap
         elif self.rect.bottom < 0:
             self.rect.top = screen.get_height()
 
 def start_game():
     print("Start Game")
+
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("GAME")
+
     screen.fill(WHITE)
 
-    char = Char(WIDTH//2, HEIGHT//2, 20, 1)
-    all_sprites = pygame.sprite.Group(char)
+    char = Char(WIDTH//2, HEIGHT//2, 20, speed)
+    enemy = Enemy(20, 570, WIDTH - 50, 20, 0, 1)
 
-    clock = pygame.time.Clock()
-    clock.tick(30)
+    all_sprites = pygame.sprite.Group(char)
 
     running = True
     while running:
@@ -72,15 +75,20 @@ def start_game():
                 if event.key == pygame.K_ESCAPE:
                     running = False
 
+        screen.fill(GREEN)
+        
         all_sprites.update()
-        screen.fill(WHITE)
+        enemy.update()
+
         all_sprites.draw(screen)
+        enemy.draw()
+
         pygame.display.flip()
 
-def show_options():
-    print("Options")
+def how_to_play():
+    print("How to play")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("GAME")
+    pygame.display.set_caption("How to play")
    
     running = True
     while running:
@@ -113,7 +121,7 @@ def main():
     pygame.display.set_caption("MENU")
 
     button_start = Button("Start Game", 300, 200, 200, 50, start_game)
-    button_options = Button("Options", 300, 260, 200, 50, show_options)
+    button_options = Button("How to play", 300, 260, 200, 50, how_to_play)
     button_exit = Button("Exit", 300, 320, 200, 50, exit_game)
 
     buttons = [button_start, button_options, button_exit]
@@ -138,7 +146,9 @@ def main():
                     menu.select()
                 if event.key == pygame.K_ESCAPE:
                     running = False
-        
+
+        pygame.display.set_caption("MENU")
+
         screen.fill(BLACK)
         menu.draw()
         pygame.display.flip()
