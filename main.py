@@ -25,7 +25,12 @@ health = 3
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("MENU")
 
+background_image = pygame.image.load("house-2022147_1280.jpg")  # Replace "background.jpg" with the filename of your image
+
+
 def start_game():
+    background_image = pygame.image.load("bridge-2023956_1280.png")
+
     print("Start Game")
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -58,7 +63,7 @@ def start_game():
             print("Game Over!")
             running = False
 
-        background.fill(WHITE)
+        screen.blit(background_image, (0, 0))
         
         player.update()
 
@@ -86,7 +91,7 @@ def how_to_play():
                 if event.key == pygame.K_ESCAPE:
                     running = False
 
-        screen.fill(ORANGE)
+        screen.blit(background_image, (0, 0))
         pygame.display.flip()
         clock.tick(30)
 
@@ -136,7 +141,7 @@ def main():
 
         pygame.display.set_caption("MENU")
 
-        screen.fill(BLUE)
+        screen.blit(background_image, (0, 0))
         menu.draw()
         pygame.display.flip()
 
