@@ -27,7 +27,7 @@ countdown_time = 30
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("MENU")
 
-background_image = pygame.image.load("house-2022147_1280.jpg")
+background_image = pygame.image.load("pictures/house-2022147_1280.jpg")
 
 #MOVE BG
 def move_bg(screen, image):
@@ -52,12 +52,12 @@ def move_bg(screen, image):
 
 #LEVEL 1
 def start_game():
-    print("Start Game")
+    print("Level 1")
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Level 1")
 
-    background = pygame.image.load("house-2022147_1280.jpg")
+    background = pygame.image.load("pictures/house-2022147_1280.jpg")
     background.convert()
     screen.blit(background, (0, 0))
 
@@ -65,6 +65,7 @@ def start_game():
     scoreboard = Label( (WIDTH//2, 20), 30 )
 
     player = Player()
+
     enemy = Enemy()
 
     all_sprites = pygame.sprite.Group()
@@ -117,7 +118,7 @@ def level2():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Level 2")
 
-    background = pygame.image.load("bridge-2023956_1280.png")
+    background = pygame.image.load("pictures/bridge-2023956_1280.png")
     background.convert()
     screen.blit(background, (0, 0))
 
@@ -178,7 +179,7 @@ def level3():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Level 3")
 
-    background = pygame.image.load("moon-7264703_1280.jpg")
+    background = pygame.image.load("pictures/moon-7264703_1280.jpg")
     background.convert()
     screen.blit(background, (0, 0))
 
@@ -234,10 +235,9 @@ def win():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("You WIN!")
 
-    background = pygame.image.load("win-606689_1280.png")
+    background = pygame.image.load("pictures/business-5459692_1280.png")
     background.convert()
     
-
     resized_image = pygame.transform.scale(background, (WIDTH, HEIGHT))
     screen.blit(resized_image, (0, 0))
 
@@ -252,8 +252,12 @@ def win():
                 exit_game()
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_y:
                     running = False
+                if event.key == pygame.K_n:
+                    thanksForPlaying()
+
+        playAgainLabel.text = f"Do you want to play again? Y/N "
 
         otherSprites.clear(screen, background)
         otherSprites.update(screen)
@@ -266,7 +270,7 @@ def lose():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("You LOST!")
 
-    background = pygame.image.load("Game-Over-Graphics-30114494-1-580x386.jpg")
+    background = pygame.image.load("pictures/Game-Over-Graphics-30114494-1-580x386.jpg")
     background.convert()
     screen.blit(background, (100, 100))
 
@@ -282,8 +286,10 @@ def lose():
                 exit_game()
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_y:
                     running = False
+                if event.key == pygame.K_n:
+                    thanksForPlaying()
 
         playAgainLabel.text = f"Do you want to play again? Y/N "
 
@@ -292,6 +298,32 @@ def lose():
         otherSprites.draw(screen)
 
         pygame.display.flip()
+
+def thanksForPlaying():
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Thanks for playing!")
+    screen.fill(GREEN)
+
+    print()
+    print("Thanks For Playing")
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                exit_game()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    exit_game()
+                else:
+                    running = False
+                    exit_game()
+        
+        pygame.display.flip()
+
 
 def how_to_play():
     print("How to play")
@@ -314,7 +346,6 @@ def how_to_play():
         screen.blit(background_image, (0, 0))
         pygame.display.flip()
         clock.tick(30)
-        
 
 def exit_game():
     print("Exit")
@@ -326,7 +357,6 @@ def saveScore():
     log = inFile.read()
     print(log)
     inFile.close()
-
 
 # Main function
 def main():

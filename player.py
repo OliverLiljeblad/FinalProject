@@ -9,8 +9,9 @@ screen = pygame.display.set_mode((width, height))
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(blue)
+        self.image = pygame.image.load("pictures/frog-2644410_1280.png")
+        self.image = pygame.transform.scale(self.image, (70, 100))
+        self.image.convert()
         self.rect = self.image.get_rect()
         self.rect.center = (width // 2, height // 2)
         self.speed = 5
@@ -34,3 +35,4 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = screen.get_height()
         elif self.rect.top < 0:
             self.rect.top = 0
+

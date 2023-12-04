@@ -8,8 +8,9 @@ red = (255, 0, 0)
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(red)
+        self.image = pygame.image.load("pictures/bacteria-156868_1280.png")
+        self.image = pygame.transform.scale(self.image, (110, 100))
+        self.image.convert()
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(0, width), 0)
         self.speed = 3
