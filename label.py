@@ -4,7 +4,6 @@ FONT_COLOR = (0,0,255)
 
 class Label(pygame.sprite.Sprite):
     # This class puts a message on the screen
-    #    
     def __init__(self, position, size):
         pygame.sprite.Sprite.__init__(self)
         self.font = pygame.font.SysFont("None", size)
