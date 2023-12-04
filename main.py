@@ -234,11 +234,15 @@ def win():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("You WIN!")
 
-    background = pygame.image.load("")
+    background = pygame.image.load("win-606689_1280.png")
     background.convert()
-    screen.blit(background, (0, 0))
+    
+
+    resized_image = pygame.transform.scale(background, (WIDTH, HEIGHT))
+    screen.blit(resized_image, (0, 0))
 
     playAgainLabel = Label( (WIDTH//2, 100), 50 )
+    otherSprites = pygame.sprite.Group(playAgainLabel)
 
     running = True
     while running:    
