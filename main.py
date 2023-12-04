@@ -50,6 +50,7 @@ def move_bg(screen, image):
 
     screen.blit(image, (-bg_x, -bg_y))
 
+
 #LEVEL 1
 def start_game():
     print("Level 1")
@@ -302,10 +303,21 @@ def lose():
 def thanksForPlaying():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Thanks for playing!")
-    screen.fill(GREEN)
+
+    background = pygame.Surface(screen.get_size())
+    background = background.convert()
+
+    screen.fill((125, 125, 125))
 
     print()
     print("Thanks For Playing")
+
+    thanks = Label( (WIDTH//2, 100), 50 )
+    name = Label( (WIDTH//2, 160), 50 )
+    year = Label( (WIDTH//2, 220), 50 )
+    key = Label( (WIDTH//2, 300), 50 )
+
+    otherSprites = pygame.sprite.Group(thanks, name, year, key)
 
     running = True
     while running:
@@ -315,13 +327,18 @@ def thanksForPlaying():
                 exit_game()
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    exit_game()
-                else:
-                    running = False
-                    exit_game()
+                running = False
+                exit_game()
         
+        thanks.text = f"Thanks for playing!"
+        name.text = f"Created By: Oliver Liljeblad"
+        year.text = f"2023"
+        key.text = f"Press any key to exit"
+        
+        screen.blit(background, (WIDTH, HEIGHT))
+        otherSprites.update(screen)
+        otherSprites.draw(screen)
+
         pygame.display.flip()
 
 
@@ -348,6 +365,7 @@ def how_to_play():
         clock.tick(30)
 
 def exit_game():
+    print()
     print("Exit")
     pygame.quit()
     sys.exit()
