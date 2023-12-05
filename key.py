@@ -11,3 +11,6 @@ class Key(pygame.sprite.Sprite):
         self.image.convert()
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
+    
+    def moveLeft(self):
+        self.rect.centerx -= 5

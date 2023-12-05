@@ -14,7 +14,7 @@ class Player(pygame.sprite.Sprite):
         self.image.convert()
         self.rect = self.image.get_rect()
         self.rect.center = (width // 2, height // 2)
-        self.speed = 5
+        self.speed = 7
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -26,6 +26,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.y -= self.speed
         if keys[pygame.K_DOWN]:
             self.rect.y += self.speed
+            if self.rect.right >= width:
+                print("")
 
         if self.rect.right > screen.get_width():
             self.rect.right = screen.get_width()

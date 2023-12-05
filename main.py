@@ -1,10 +1,13 @@
 import pygame
 import sys
+from random import randint
 from menuItems import Menu
 from menuItems import Button
 from enemy import Enemy
 from player import Player
 from label import Label
+from key import Key
+from background import Background
 
 # Initialize Pygame
 pygame.init()
@@ -28,49 +31,34 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("MENU")
 
 background_image = pygame.image.load("pictures/house-2022147_1280.jpg")
-
-#MOVE BG
-def move_bg(screen, image):
-    screen_size = screen.get_size()
-    bg_size = image.get_size()
-    bg_x = ((bg_size[0]-screen_size[0])) // 2
-    bg_y = ((bg_size[1]-screen_size[1])) // 2
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        bg_x -= 10
-    if keys[pygame.K_RIGHT]:
-        bg_x += 10
-    if keys[pygame.K_UP]:
-        bg_y -= 10
-    if keys[pygame.K_DOWN]:
-        bg_y += 10
-    bg_x = max(0, min(bg_size[0]-screen_size[0], bg_x)) 
-    bg_y = max(0, min(bg_size[1]-screen_size[1], bg_y))
-
-    screen.blit(image, (-bg_x, -bg_y))
-
+collision_sound = pygame.mixer.Sound("584207__soundsnapfx__impact-short-ring-out.wav")
 
 #LEVEL 1
 def start_game():
     print("Level 1")
 
+    remainingKeys = 1
+
+    hasKey = False
+
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Level 1")
 
-    background = pygame.image.load("pictures/house-2022147_1280.jpg")
-    background.convert()
-    screen.blit(background, (0, 0))
+    background = pygame.Surface(screen.get_size())
+    background = background.convert()
+ 
+    backgroundPicture = Background("pictures/house-2022147_1280.jpg")
 
-    
     scoreboard = Label( (WIDTH//2, 20), 30 )
 
     player = Player()
 
     enemy = Enemy()
 
+    key = Key(randint(30, 100), randint(50, 100))
+
     all_sprites = pygame.sprite.Group()
-    all_sprites.add(player, enemy)
+    all_sprites.add(backgroundPicture, player, enemy, key)
     otherSprites = pygame.sprite.Group(scoreboard)
 
     clock = pygame.time.Clock()
@@ -88,24 +76,35 @@ def start_game():
         
         if pygame.sprite.spritecollide(player, pygame.sprite.Group(enemy), False):
             print("Game Over!")
+            collision_sound.play()
             running = False
             lose()
 
-        if player.rect.top == 0:
-           level2()
-           running = False
+        if pygame.sprite.spritecollide(player, pygame.sprite.Group(key), False):
+            print()
+            print("KEY")
+            all_sprites.remove(key)
+            hasKey = True
 
-        scoreboard.text = f"Remaining Time: "
-
+        if hasKey == True:
+            if player.rect.top == 0:
+                level2()
+                running = False
+        
+        if hasKey == False:
+            scoreboard.text = f"Remaining Keys: 1"
+        else:
+            scoreboard.text = f"Remaining Keys: 0"
+        
         otherSprites.clear(screen, background)
         all_sprites.clear(screen, background)
         
-        otherSprites.update(screen)
         player.update()
         enemy.update(player)
+        otherSprites.update(screen)
 
-        otherSprites.draw(screen)
         all_sprites.draw(screen)
+        otherSprites.draw(screen)
         
         pygame.display.flip()
 
@@ -116,21 +115,27 @@ def level2():
     print()
     print("Level 2")
 
+    hasKey = False
+    hasKey1 = False
+
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Level 2")
 
-    background = pygame.image.load("pictures/bridge-2023956_1280.png")
-    background.convert()
-    screen.blit(background, (0, 0))
+    background = pygame.Surface(screen.get_size())
+    background = background.convert()
+ 
+    backgroundPicture = Background("pictures/bridge-2023956_1280.png")
 
-    
     scoreboard = Label( (WIDTH//2, 20), 30 )
 
     player = Player()
     enemy = Enemy()
+    enemy1 = Enemy()
+    key = Key(randint(600,750), randint(50, 150))
+    key1 = Key(randint(50, 150), randint(400, 550))
 
     all_sprites = pygame.sprite.Group()
-    all_sprites.add(player, enemy)
+    all_sprites.add(backgroundPicture, key, key1, player, enemy, enemy1)
     otherSprites = pygame.sprite.Group(scoreboard)
 
     clock = pygame.time.Clock()
@@ -148,25 +153,47 @@ def level2():
         
         if pygame.sprite.spritecollide(player, pygame.sprite.Group(enemy), False):
             print("Game Over!")
+            collision_sound.play()
             running = False
             lose()
+        
+        if pygame.sprite.spritecollide(player, pygame.sprite.Group(key), False):
+            print()
+            print("KEY")
+            all_sprites.remove(key)
+            hasKey = True
+        
+        if pygame.sprite.spritecollide(player, pygame.sprite.Group(key1), False):
+            print()
+            print("KEY")
+            all_sprites.remove(key1)
+            hasKey1 = True
 
-        if player.rect.right == WIDTH:
-           level3()
-           running = False
-
-        scoreboard.text = f"Remaining Time: "
+        if hasKey and hasKey1 == True:
+            scoreboard.text = f"Remaining Keys: 0"
+            if player.rect.right == WIDTH:
+                level3()
+                running = False
+        elif hasKey == False and hasKey1 == False:
+            scoreboard.text = f"Remaining Keys: 2"
+        elif hasKey == True and hasKey1 == False:
+            scoreboard.text = f"Remaining Keys: 1"
+        elif hasKey == False and hasKey1 == True:
+            scoreboard.text = f"Remaining Keys: 1"
+            
 
         otherSprites.clear(screen, background)
         all_sprites.clear(screen, background)
         
-        otherSprites.update(screen)
+        
         player.update()
         enemy.update(player)
-
-        otherSprites.draw(screen)
-        all_sprites.draw(screen)
+        enemy1.update(player)
+        otherSprites.update(screen)
         
+        all_sprites.draw(screen)
+        otherSprites.draw(screen)
+
         pygame.display.flip()
 
         clock.tick(30)
@@ -177,21 +204,31 @@ def level3():
     print()
     print("Level 3")
 
+    hasKey = False
+    hasKey1 = False
+    hasKey2 = False
+
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Level 3")
 
-    background = pygame.image.load("pictures/moon-7264703_1280.jpg")
-    background.convert()
-    screen.blit(background, (0, 0))
-
+    background = pygame.Surface(screen.get_size())
+    background = background.convert()
+ 
+    backgroundPicture = Background("pictures/moon-7264703_1280.jpg")
     
     scoreboard = Label( (WIDTH//2, 20), 30 )
 
     player = Player()
+
+    key = Key(randint(600,750), randint(0, 150))
+    key1 = Key(randint(0, 150), randint(400, 550))
+    key2 = Key(850, randint(50,750))
     enemy = Enemy()
+    enemy1 = Enemy()
+    enemy2 = Enemy()
 
     all_sprites = pygame.sprite.Group()
-    all_sprites.add(player, enemy)
+    all_sprites.add(backgroundPicture, key, key1, key2, player, enemy, enemy1, enemy2)
     otherSprites = pygame.sprite.Group(scoreboard)
 
     clock = pygame.time.Clock()
@@ -209,25 +246,66 @@ def level3():
         
         if pygame.sprite.spritecollide(player, pygame.sprite.Group(enemy), False):
             print("Game Over!")
+            collision_sound.play()
             running = False
             lose()
 
-        if player.rect.bottom == HEIGHT:
-            running = False
-            win()
+        if pygame.sprite.spritecollide(player, pygame.sprite.Group(key), False):
+            print()
+            print("KEY")
+            all_sprites.remove(key)
+            hasKey = True
+        
+        if pygame.sprite.spritecollide(player, pygame.sprite.Group(key1), False):
+            print()
+            print("KEY")
+            all_sprites.remove(key1)
+            hasKey1 = True
+        
+        if pygame.sprite.spritecollide(player, pygame.sprite.Group(key2), False):
+            print()
+            print("KEY")
+            all_sprites.remove(key2)
+            hasKey2 = True
 
-        scoreboard.text = f"Remaining Time: "
+        if hasKey and hasKey1 and hasKey2 == True:
+            scoreboard.text = f"Remaining Keys: 0"
+            if player.rect.top == 0:
+                running = False
+                win()
+        elif hasKey == False and hasKey1 == False and hasKey2 == False:
+            scoreboard.text = f"Remaining Keys: 3"
+        elif hasKey == True and hasKey1 == False and hasKey2 == False:
+            scoreboard.text = f"Remaining Keys: 2"
+        elif hasKey == False and hasKey1 == True and hasKey2 == False:
+            scoreboard.text = f"Remaining Keys: 2"
+        elif hasKey == False and hasKey1 == False and hasKey2 == True:
+            scoreboard.text = f"Remaining Keys: 2"
+        elif hasKey == True and hasKey1 == True and hasKey2 == False:
+            scoreboard.text = f"Remaining Keys: 1"
+        elif hasKey == True and hasKey1 == False and hasKey2 == True:
+            scoreboard.text = f"Remaining Keys: 1"
+        elif hasKey == False and hasKey1 == True and hasKey2 == True:
+            scoreboard.text = f"Remaining Keys: 1"
+
+        if player.rect.right == WIDTH:
+            backgroundPicture.moveLeft()
+            key.moveLeft()
+            key1.moveLeft()
+            key2.moveLeft()
 
         otherSprites.clear(screen, background)
         all_sprites.clear(screen, background)
         
-        otherSprites.update(screen)
         player.update()
         enemy.update(player)
-
-        otherSprites.draw(screen)
-        all_sprites.draw(screen)
+        enemy1.update(player)
+        enemy2.update(player)
+        otherSprites.update(screen)
         
+        all_sprites.draw(screen)
+        otherSprites.draw(screen)
+
         pygame.display.flip()
 
         clock.tick(30)
@@ -273,6 +351,7 @@ def lose():
 
     background = pygame.image.load("pictures/Game-Over-Graphics-30114494-1-580x386.jpg")
     background.convert()
+    background.set_colorkey(background.get_at((1,1)))
     screen.blit(background, (100, 100))
 
     playAgainLabel = Label( (WIDTH//2, 100), 50 )
@@ -280,7 +359,7 @@ def lose():
     otherSprites = pygame.sprite.Group(playAgainLabel)
 
     running = True
-    while running:    
+    while running: 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -381,7 +460,7 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("MENU")
 
-    button_start = Button("Start Game", 300, 200, 200, 50, start_game)
+    button_start = Button("Start Game", 300, 200, 200, 50, level3)
     button_options = Button("How to play", 300, 260, 200, 50, how_to_play)
     button_exit = Button("Exit", 300, 320, 200, 50, exit_game)
 
