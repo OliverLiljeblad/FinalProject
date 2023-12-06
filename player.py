@@ -13,7 +13,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (70, 100))
         self.image.convert()
         self.rect = self.image.get_rect()
-        self.rect.center = (width // 2, height // 2)
+        self.rect.center = (width // 2, height-50)
         self.speed = 7
 
     def update(self):

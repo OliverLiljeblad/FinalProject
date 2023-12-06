@@ -82,8 +82,6 @@ def start_game():
             lose()
 
         if pygame.sprite.spritecollide(player, pygame.sprite.Group(key), False):
-            print()
-            print("KEY")
             all_sprites.remove(key)
             hasKey = True
 
@@ -159,14 +157,10 @@ def level2():
             lose()
         
         if pygame.sprite.spritecollide(player, pygame.sprite.Group(key), False):
-            print()
-            print("KEY")
             all_sprites.remove(key)
             hasKey = True
         
         if pygame.sprite.spritecollide(player, pygame.sprite.Group(key1), False):
-            print()
-            print("KEY")
             all_sprites.remove(key1)
             hasKey1 = True
 
@@ -252,20 +246,14 @@ def level3():
             lose()
 
         if pygame.sprite.spritecollide(player, pygame.sprite.Group(key), False):
-            print()
-            print("KEY")
             all_sprites.remove(key)
             hasKey = True
         
         if pygame.sprite.spritecollide(player, pygame.sprite.Group(key1), False):
-            print()
-            print("KEY")
             all_sprites.remove(key1)
             hasKey1 = True
         
         if pygame.sprite.spritecollide(player, pygame.sprite.Group(key2), False):
-            print()
-            print("KEY")
             all_sprites.remove(key2)
             hasKey2 = True
 
@@ -439,7 +427,7 @@ def how_to_play():
     label2 = Label( (WIDTH//2, 50), 30 )
     label3 = Label( (WIDTH//2, 90), 30 )
     label4 = Label( (WIDTH//2, 100), 30 )
-    label5 = Label( (300, 280), 35 )
+    label5 = Label( (320, 280), 35 )
     label6 = Label( (WIDTH//2, 550), 30 )
     label7 = Label( (150, 250), 30 )
 
@@ -458,7 +446,7 @@ def how_to_play():
                 if event.key == pygame.K_c:
                     label5.text = f"All keys might not be visible, look outside the screen"
 
-        label1.text = f"The goal is to survive all 3 levels without dying"
+        label1.text = f"The goal is to complete all 3 levels without dying"
         label2.text = f"Find all keys and go to the top of the screen to advance"
         label4.text = f"Use the arows to move around"
         label6.text = f"Press ESC to back to go the menu at any time"
@@ -477,6 +465,7 @@ def exit_game():
     pygame.quit()
     sys.exit()
 
+#THIS FUNCTION IS NOT DONE, this is what i would work on if i had more time
 def saveScore():
     inFile = open("log.txt", "r")
     log = inFile.read()
