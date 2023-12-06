@@ -1,6 +1,6 @@
 import pygame
 
-FONT_COLOR = (0,0,255)
+FONT_COLOR = (210,0,0)
 
 class Label(pygame.sprite.Sprite):
     # This class puts a message on the screen

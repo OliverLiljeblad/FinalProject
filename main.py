@@ -31,7 +31,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("MENU")
 
 background_image = pygame.image.load("pictures/house-2022147_1280.jpg")
-collision_sound = pygame.mixer.Sound("584207__soundsnapfx__impact-short-ring-out.wav")
+collision_sound = pygame.mixer.Sound("soundeffects/584207__soundsnapfx__impact-short-ring-out.wav")
+key_sound = pygame.mixer.Sound("soundeffects/323703__reitanna__funny-yay.wav")
 
 #LEVEL 1
 def start_game():
@@ -55,10 +56,10 @@ def start_game():
 
     enemy = Enemy()
 
-    key = Key(randint(30, 100), randint(50, 100))
+    key = Key(randint(50, 750), randint(80, 100))
 
     all_sprites = pygame.sprite.Group()
-    all_sprites.add(backgroundPicture, player, enemy, key)
+    all_sprites.add(backgroundPicture, key, player, enemy)
     otherSprites = pygame.sprite.Group(scoreboard)
 
     clock = pygame.time.Clock()
@@ -131,8 +132,8 @@ def level2():
     player = Player()
     enemy = Enemy()
     enemy1 = Enemy()
-    key = Key(randint(600,750), randint(50, 150))
-    key1 = Key(randint(50, 150), randint(400, 550))
+    key = Key(randint(600,750), randint(80, 150))
+    key1 = Key(randint(50, 150), randint(400, 520))
 
     all_sprites = pygame.sprite.Group()
     all_sprites.add(backgroundPicture, key, key1, player, enemy, enemy1)
@@ -171,7 +172,7 @@ def level2():
 
         if hasKey and hasKey1 == True:
             scoreboard.text = f"Remaining Keys: 0"
-            if player.rect.right == WIDTH:
+            if player.rect.top == 0:
                 level3()
                 running = False
         elif hasKey == False and hasKey1 == False:
@@ -220,9 +221,9 @@ def level3():
 
     player = Player()
 
-    key = Key(randint(600,750), randint(0, 150))
-    key1 = Key(randint(0, 150), randint(400, 550))
-    key2 = Key(850, randint(50,750))
+    key = Key(randint(300,750), randint(80, 150))
+    key1 = Key(randint(0, 150), randint(400, 520))
+    key2 = Key(randint(850, 900), randint(80,520))
     enemy = Enemy()
     enemy1 = Enemy()
     enemy2 = Enemy()
@@ -289,6 +290,10 @@ def level3():
             scoreboard.text = f"Remaining Keys: 1"
 
         if player.rect.right == WIDTH:
+            enemy.speed = 2.5
+            enemy1.speed = 2.5
+            enemy2.sepped = 2.5
+
             backgroundPicture.moveLeft()
             key.moveLeft()
             key1.moveLeft()
@@ -317,6 +322,8 @@ def win():
     background = pygame.image.load("pictures/business-5459692_1280.png")
     background.convert()
     
+    key_sound.play()
+
     resized_image = pygame.transform.scale(background, (WIDTH, HEIGHT))
     screen.blit(resized_image, (0, 0))
 
@@ -428,6 +435,16 @@ def how_to_play():
 
     clock = pygame.time.Clock()
 
+    label1 = Label( (WIDTH//2, 20), 30 )
+    label2 = Label( (WIDTH//2, 50), 30 )
+    label3 = Label( (WIDTH//2, 90), 30 )
+    label4 = Label( (WIDTH//2, 100), 30 )
+    label5 = Label( (300, 280), 35 )
+    label6 = Label( (WIDTH//2, 550), 30 )
+    label7 = Label( (150, 250), 30 )
+
+    otherSprites = pygame.sprite.Group(label1, label2, label3, label4, label5, label6, label7)
+
     running = True
     while running:
         for event in pygame.event.get():
@@ -438,8 +455,19 @@ def how_to_play():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
+                if event.key == pygame.K_c:
+                    label5.text = f"All keys might not be visible, look outside the screen"
 
+        label1.text = f"The goal is to survive all 3 levels without dying"
+        label2.text = f"Find all keys and go to the top of the screen to advance"
+        label4.text = f"Use the arows to move around"
+        label6.text = f"Press ESC to back to go the menu at any time"
+        label7.text = f"Press C for a hint"
         screen.blit(background_image, (0, 0))
+
+        otherSprites.update(screen)
+        otherSprites.draw(screen)
+
         pygame.display.flip()
         clock.tick(30)
 
@@ -460,7 +488,7 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("MENU")
 
-    button_start = Button("Start Game", 300, 200, 200, 50, level3)
+    button_start = Button("Start Game", 300, 200, 200, 50, start_game)
     button_options = Button("How to play", 300, 260, 200, 50, how_to_play)
     button_exit = Button("Exit", 300, 320, 200, 50, exit_game)
 
